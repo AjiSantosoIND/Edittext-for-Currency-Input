@@ -4,10 +4,12 @@ import android.graphics.*
 import android.graphics.drawable.Drawable
 
 class TextDrawable(private val text: String) : Drawable() {
+    var visibleTextSize: Float = 48f
+
     private val paint: Paint = Paint()
         .apply {
             color = Color.WHITE
-            textSize = 22f
+            textSize = visibleTextSize
             isAntiAlias = true
             isFakeBoldText = true
             setShadowLayer(6f, 0f, 0f, Color.BLACK)

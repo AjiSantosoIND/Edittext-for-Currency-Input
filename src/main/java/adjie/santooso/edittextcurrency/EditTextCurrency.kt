@@ -2,7 +2,6 @@ package adjie.santooso.edittextcurrency
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.graphics.drawable.Drawable
 import android.text.*
 import android.util.AttributeSet
 import androidx.appcompat.widget.AppCompatEditText
@@ -14,6 +13,10 @@ class EditTextCurrency @JvmOverloads constructor(
     attrs: AttributeSet? = null,
     defStyleAttr: Int = 0
 ) : AppCompatEditText(context, attrs, defStyleAttr) {
+    var currencyLocale: Locale = Locale("id", "ID")
+
+    private fun getCurrency(): Currency = Currency.getInstance(currencyLocale)
+    private fun getCurrencySymbol(): String = getCurrency().getSymbol(currencyLocale)
 
     override fun onFinishInflate() {
         super.onFinishInflate()
@@ -29,7 +32,7 @@ class EditTextCurrency @JvmOverloads constructor(
                 for (i in start until end) {
                     val char = source!![i]
                     if (!Character.isDigit(char)) {
-                        return if (char == ',' || char == '.') {
+                        return if (char == ',' || char == '.' || getCurrencySymbol().contains(char)) {
                             null
                         } else ""
                     }
@@ -47,15 +50,8 @@ class EditTextCurrency @JvmOverloads constructor(
     }
 
     private val totalTextWatcher = object : TextWatcher {
-        private var currencySymbolDrawable: Drawable? = null
-            get() {
-                val locale = Locale.US
-                val currency = Currency.getInstance(locale)
-                val currencySymbol = currency.getSymbol(locale)
-
-                return if (field == null) TextDrawable(currencySymbol)
-                else field
-            }
+        private fun getCurrency(): Currency = Currency.getInstance(currencyLocale)
+        private fun getCurrencySymbol(): String = getCurrency().getSymbol(currencyLocale)
 
         override fun afterTextChanged(s: Editable?) {}
 
@@ -74,7 +70,6 @@ class EditTextCurrency @JvmOverloads constructor(
             before: Int,
             count: Int
         ) {
-
             s?.trim()?.let {
                 removeTextChangedListener(this)
 
@@ -83,10 +78,13 @@ class EditTextCurrency @JvmOverloads constructor(
                 numberFormatter.maximumFractionDigits = 2
                 numberFormatter.isDecimalSeparatorAlwaysShown = false
 
-                var result = it.toString()
-                if (result.isNotEmpty() && it.toString().last().isDigit()) {
+                val displayCurrencySymbol = getCurrencySymbol() + " "
+                var result = it.toString().replace(displayCurrencySymbol, "")
+                result = result.replace(displayCurrencySymbol.trim(), "")
+
+                if (result.isNotEmpty() && result.toString().last().isDigit()) {
                     val parsedValue = try {
-                        numberFormatter.parse(it.toString())
+                        numberFormatter.parse(result)
                     } catch (e: Exception) {
                         0.0
                     }
@@ -94,11 +92,9 @@ class EditTextCurrency @JvmOverloads constructor(
                     result = numberFormatter.format(parsedValue)
                 }
 
-                setText(result)
-                setSelection(result.length)
-
-                compoundDrawablePadding = context.resources.getDimension(R.dimen.dp10).toInt()
-                setCompoundDrawables(currencySymbolDrawable, null, null, null)
+                val displayedText = displayCurrencySymbol + result
+                setText(displayedText)
+                setSelection(displayedText.length)
 
                 addTextChangedListener(this)
             }
