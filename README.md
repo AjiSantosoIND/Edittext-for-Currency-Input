@@ -1,2 +1,10 @@
 # Edittext-for-Currency-Input
-Edittext for currency input
+
+Code ini untuk requeirement seperti berikut:
+
+1. Auto formatting number ketika user masukan angka.
+2. Menampilkan CurrencySymbol ketika user masukan angka.
+
+Ketentuan pemakaian code:
+
+Bebas untuk dicustom sesuai kebutuhan.
