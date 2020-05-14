@@ -1,4 +1,4 @@
-# Edittext-for-Currency-Input
+# EdittextCurrency untuk input angka berformat currency 
 
 Code ini untuk requeirement seperti berikut:
 
