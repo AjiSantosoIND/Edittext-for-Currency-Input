@@ -7,4 +7,4 @@ Code ini untuk requeirement seperti berikut:
 
 Ketentuan pemakaian code:
 
-Bebas untuk dicustom sesuai kebutuhan.
+1. Bebas untuk dicustom sesuai kebutuhan.
